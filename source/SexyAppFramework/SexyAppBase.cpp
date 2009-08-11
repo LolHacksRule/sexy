@@ -241,6 +241,7 @@ SexyAppBase::SexyAppBase()
 	mStandardWordWrap = true;
 	mbAllowExtendedChars = true;
 	mEnableMaximizeButton = false;
+	mMouseSensitivity = 1.0f;
 
 	mMusicVolume = 0.85;
 	mSfxVolume = 0.85;
@@ -1579,6 +1580,7 @@ void SexyAppBase::WriteToRegistry()
 	RegistryWriteInteger("CustomCursors", mCustomCursorsEnabled ? 1 : 0);		
 	RegistryWriteInteger("InProgress", 0);
 	RegistryWriteBoolean("WaitForVSync", mWaitForVSync);	
+	RegistryWriteInteger("MouseSensitivity", (int) (mMouseSensitivity * 100));
 }
 
 bool SexyAppBase::RegistryEraseKey(const SexyString& _theKeyName)
@@ -1907,6 +1909,9 @@ void SexyAppBase::ReadFromRegistry()
 
 	if (RegistryReadInteger("ScreenMode", &anInt))
 		mIsWindowed = anInt == 0;
+
+	if (RegistryReadInteger("MouseSensitivity", &anInt))
+		mMouseSensitivity = anInt / 100.0f;
 
 	RegistryReadInteger("PreferredX", &mPreferredX);
 	RegistryReadInteger("PreferredY", &mPreferredY);	
@@ -3553,6 +3558,53 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 						}
 					}
 				}
+				
+				// apply mouse sensitivity
+				if (uMsg == WM_MOUSEMOVE && aSexyApp->mMouseSensitivity != 1.0f)
+				{
+					int x = (short) LOWORD(lParam);
+					int y = (short) HIWORD(lParam);
+
+					static int aLastX = x;
+					static int aLastY = y-1;
+					static float aFracX = 0;
+					static float aFracY = 0;
+
+					int aCurrentX = x;
+					int aCurrentY = y;
+
+					if(aSexyApp->mMouseIn)
+					{
+						int xDiff = aCurrentX - aLastX;
+						int yDiff = aCurrentY - aLastY;
+
+						float offsetX = aFracX + aSexyApp->mMouseSensitivity * xDiff;
+						float offsetY = aFracY + aSexyApp->mMouseSensitivity * yDiff;
+
+						aFracX = (offsetX - int(offsetX));
+						aFracY = (offsetY - int(offsetY));
+
+						aCurrentX = aLastX + (int)(offsetX);
+						aCurrentY = aLastY + (int)(offsetY);
+					}
+					
+					if (aLastX != aCurrentX || aLastY != aCurrentY)
+					{
+						POINT aPoint = {aCurrentX, aCurrentY};
+						::ClientToScreen(aSexyApp->mHWnd, &aPoint);
+						::SetCursorPos(aPoint.x, aPoint.y);
+
+						aLastX = aCurrentX;
+						aLastY = aCurrentY;
+						
+						lParam = (aLastY << 16) | ( aLastX );
+					}
+					else
+					{
+						// skip message if no mouse moves
+						pushMessage = false;
+					}
+				}
 
 				if (pushMessage)
 				{
@@ -4018,6 +4070,20 @@ bool SexyAppBase::IsAltKeyUsed(WPARAM wParam)
 			return false;
 	}
 }
+void SexyAppBase::ShowFPS(bool show)
+{
+	mShowFPS = show;
+		
+	mWidgetManager->MarkAllDirty();
+
+	if (mShowFPS)
+	{
+		gFPSTimer.Start();
+		gFrameCount = 0;
+		gFPSDisplay = 0;
+		gForceDisplay = true;
+	}
+}
 
 bool SexyAppBase::DebugKeyDown(int theKey)
 {
@@ -4037,22 +4103,12 @@ bool SexyAppBase::DebugKeyDown(int theKey)
 	{
 		if(mWidgetManager->mKeyDown[KEYCODE_SHIFT])
 		{
-			mShowFPS = true;
 			if (++mShowFPSMode >= Num_FPS_Types)
 				mShowFPSMode = 0;
+			ShowFPS(true);
 		}
 		else
-			mShowFPS = !mShowFPS;
-
-		mWidgetManager->MarkAllDirty();
-
-		if (mShowFPS)
-		{
-			gFPSTimer.Start();
-			gFrameCount = 0;
-			gFPSDisplay = 0;
-			gForceDisplay = true;
-		}
+			ShowFPS(!mShowFPS);
 	}
 	else if (theKey == VK_F8)
 	{
@@ -5680,13 +5736,13 @@ bool SexyAppBase::LoadProperties(const std::string& theFileName, bool required, 
 	PropertiesParser aPropertiesParser(this);
 
 	// Load required language-file properties
-		if (!aPropertiesParser.ParsePropertiesBuffer(aBuffer))
-		{
-			Popup(aPropertiesParser.GetErrorText());		
-			return false;
-		}
-		else
-			return true;
+	if (!aPropertiesParser.ParsePropertiesBuffer(aBuffer))
+	{
+		Popup(aPropertiesParser.GetErrorText());		
+		return false;
+	}
+	else
+		return true;
 }
 
 bool SexyAppBase::LoadProperties()

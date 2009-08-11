@@ -261,6 +261,7 @@ public:
 	bool					mCustomCursorDirty;	
 	bool					mLastShutdownWasGraceful;
 	bool					mIsWideWindow;
+	float					mMouseSensitivity;
 
 	int						mNumLoadingThreadTasks;
 	int						mCompletedLoadingThreadTasks;
@@ -567,6 +568,7 @@ public:
 	void					ClearUpdateBacklog(bool relaxForASecond = false);
 	bool					IsScreenSaver();
 	virtual bool			AppCanRestore();
+	virtual void			ShowFPS(bool show);
 	static LRESULT CALLBACK	WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);		
 };
 
