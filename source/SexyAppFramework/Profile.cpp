@@ -26,21 +26,26 @@
 
 #include "Common.h"			// Sexy Functions like FileExists()
 
-using namespace GameState;
+using namespace Sexy;
 
+//************************************
+// Method:      Profile
+// FullName:    Sexy::Profile::Profile
+// Access:      protected 
+//************************************
 Profile::Profile()
 {
 }
 
 //************************************
 // Method:    GetProfile
-// FullName:  GameState::Profile::GetProfile
+// FullName:  Sexy::Profile::GetProfile
 // Access:    public 
 // Returns:   Profile*
 // Description: Singleton Access!  Only one user loaded at a time, this is so we
 //				can access the Profile variables anywhere in code, quickly!
 //************************************
-Profile* GameState::Profile::GetProfile()
+Profile* Sexy::Profile::GetProfile()
 {
 	static Profile aProfile;
 	return &aProfile;
@@ -48,7 +53,7 @@ Profile* GameState::Profile::GetProfile()
 
 //************************************
 // Method:    GetStateFileName
-// FullName:  GameState::Profile::GetStateFileName
+// FullName:  Sexy::Profile::GetStateFileName
 // Access:    public 
 // Returns:   std::string
 // Description: returns the file name of the save state named 'theStateName'
@@ -59,7 +64,7 @@ Profile* GameState::Profile::GetProfile()
 //				game state.  So mom and can can both pick up where they left off!
 // Parameter: SexyString theStateName
 //************************************
-std::string GameState::Profile::GetStateFileName( SexyString theStateName, SexyString theUserName /*= ""*/ )
+std::string Sexy::Profile::GetStateFileName( SexyString theStateName, SexyString theUserName /*= ""*/ )
 {
 	std::string aStateName = SexyStringToStringFast(theStateName);
 	std::string aUserName =  (theUserName == _S("")) ? SexyStringToStringFast(mUserName) : SexyStringToStringFast(theUserName);
@@ -69,7 +74,7 @@ std::string GameState::Profile::GetStateFileName( SexyString theStateName, SexyS
 
 //************************************
 // Method:    GetUserFileName
-// FullName:  GameState::Profile::GetUserFileName
+// FullName:  Sexy::Profile::GetUserFileName
 // Access:    virtual public 
 // Returns:   std::string
 // Description: Used internally to locate the XML Profile settings for the User.
@@ -79,7 +84,7 @@ std::string GameState::Profile::GetStateFileName( SexyString theStateName, SexyS
 //				method is along the same idea, only it's used externally by you!
 // Parameter: SexyString theUserName
 //************************************
-std::string GameState::Profile::GetUserFileName( SexyString theUserName /*= ""*/ )
+std::string Sexy::Profile::GetUserFileName( SexyString theUserName /*= ""*/ )
 {
 	std::string aUserName = (theUserName == _S("")) ? SexyStringToStringFast(mUserName) : SexyStringToStringFast(theUserName);
 
@@ -88,7 +93,7 @@ std::string GameState::Profile::GetUserFileName( SexyString theUserName /*= ""*/
 
 //************************************
 // Method:    SetIntegerValue
-// FullName:  GameState::Profile::SetIntegerValue
+// FullName:  Sexy::Profile::SetIntegerValue
 // Access:    public 
 // Returns:   void
 // Description: Lets you add values to the Profile based on a text key!
@@ -97,7 +102,7 @@ std::string GameState::Profile::GetUserFileName( SexyString theUserName /*= ""*/
 // Parameter: SexyString theValueName
 // Parameter: int theValue
 //************************************
-void GameState::Profile::SetIntegerValue( SexyString theValueName, int theValue )
+void Sexy::Profile::SetIntegerValue( SexyString theValueName, int theValue )
 {
 	if (mIntegerMap.find(theValueName) != mIntegerMap.end())
 		mIntegerMap[theValueName] = theValue;
@@ -107,7 +112,7 @@ void GameState::Profile::SetIntegerValue( SexyString theValueName, int theValue 
 
 //************************************
 // Method:    GetIntegerValue
-// FullName:  GameState::Profile::GetIntegerValue
+// FullName:  Sexy::Profile::GetIntegerValue
 // Access:    public 
 // Returns:   int
 // Description: Gets the value of the integer associated with the Key or returns
@@ -115,7 +120,7 @@ void GameState::Profile::SetIntegerValue( SexyString theValueName, int theValue 
 // Parameter: SexyString theValueName
 // Parameter: int theDefault
 //************************************
-int GameState::Profile::GetIntegerValue( SexyString theValueName, int theDefault )
+int Sexy::Profile::GetIntegerValue( SexyString theValueName, int theDefault )
 {
 	// We will not create a value that doesn't exist.  This means that you can
 	// have things like secret values that won't be created in the profile.xml
@@ -195,6 +200,14 @@ bool Profile::Save(SexyString theFileName)
 	return false; // FAILURE
 }
 
+//************************************
+// Method:      Load
+// FullName:    Sexy::Profile::Load
+// Access:      virtual public 
+// Returns:     bool
+// Parameter:   SexyString theFileName
+// Description: Loads the '%user_name%.xml' from the '%APP_DATA_FOLDER%/users/' dir
+//************************************
 bool  Profile::Load(SexyString theFileName)
 {
 	mIntegerMap.clear();
@@ -292,7 +305,7 @@ void Profile::ParseXML(Sexy::XMLParser* theParser)
 
 //************************************
 // Method:    LoadUser
-// FullName:  GameState::Profile::LoadUser
+// FullName:  Sexy::Profile::LoadUser
 // Access:    public 
 // Returns:   bool
 // Description: Changes the currently loaded user to theUserName.
@@ -318,7 +331,7 @@ bool Profile::LoadUser(SexyString theUserName)
 
 //************************************
 // Method:    SaveUser
-// FullName:  GameState::Profile::SaveUser
+// FullName:  Sexy::Profile::SaveUser
 // Access:    public 
 // Returns:   bool
 // Description: Saves the currently loaded user's profile
@@ -338,7 +351,7 @@ bool Profile::SaveUser()
 
 //************************************
 // Method:    NewUser
-// FullName:  GameState::Profile::NewUser
+// FullName:  Sexy::Profile::NewUser
 // Access:    public 
 // Returns:   bool
 // Description: Creates a new user from the specified user name
@@ -355,7 +368,7 @@ bool Profile::NewUser(SexyString theUserName)
 
 //************************************
 // Method:    SetUserName
-// FullName:  GameState::Profile::SetUserName
+// FullName:  Sexy::Profile::SetUserName
 // Access:    public 
 // Returns:   bool
 // Description: internally used method to validate the user name
@@ -382,7 +395,7 @@ bool Profile::SetUserName(SexyString theUserName)
 
 //************************************
 // Method:    ResetProfile
-// FullName:  GameState::Profile::ResetProfile
+// FullName:  Sexy::Profile::ResetProfile
 // Access:    public 
 // Returns:   void
 // Description: Use this to reset the user to 0!
@@ -397,14 +410,14 @@ void Profile::ResetProfile()
 
 //************************************
 // Method:    SetBoolValue
-// FullName:  GameState::Profile::SetBoolValue
+// FullName:  Sexy::Profile::SetBoolValue
 // Access:    public 
 // Returns:   void
 // Description: Sets the specified Variable to the Value
 // Parameter: SexyString theValueName
 // Parameter: bool theValue
 //************************************
-void GameState::Profile::SetBoolValue( SexyString theValueName, bool theValue )
+void Sexy::Profile::SetBoolValue( SexyString theValueName, bool theValue )
 {
 	if (mBoolMap.find(theValueName) != mBoolMap.end())
 		mBoolMap[theValueName] = theValue;
@@ -414,7 +427,7 @@ void GameState::Profile::SetBoolValue( SexyString theValueName, bool theValue )
 
 //************************************
 // Method:    GetBoolValue
-// FullName:  GameState::Profile::GetBoolValue
+// FullName:  Sexy::Profile::GetBoolValue
 // Access:    public 
 // Returns:   bool
 // Description: Gets the Specified variable, and returns theDefault if not found
@@ -423,7 +436,7 @@ void GameState::Profile::SetBoolValue( SexyString theValueName, bool theValue )
 // Parameter: SexyString theValueName
 // Parameter: bool theDefault
 //************************************
-bool GameState::Profile::GetBoolValue( SexyString theValueName, bool theDefault )
+bool Sexy::Profile::GetBoolValue( SexyString theValueName, bool theDefault )
 {
 	if (mBoolMap.find(theValueName) != mBoolMap.end())
 		return mBoolMap[theValueName];
@@ -433,14 +446,14 @@ bool GameState::Profile::GetBoolValue( SexyString theValueName, bool theDefault 
 
 //************************************
 // Method:    SetFloatValue
-// FullName:  GameState::Profile::SetFloatValue
+// FullName:  Sexy::Profile::SetFloatValue
 // Access:    public 
 // Returns:   void
 // Description:  Sets the specified Variable to the Value
 // Parameter: SexyString theValueName
 // Parameter: double theValue
 //************************************
-void GameState::Profile::SetFloatValue( SexyString theValueName, double theValue )
+void Sexy::Profile::SetFloatValue( SexyString theValueName, double theValue )
 {
 	if (mFloatMap.find(theValueName) != mFloatMap.end())
 		mFloatMap[theValueName] = theValue;
@@ -450,7 +463,7 @@ void GameState::Profile::SetFloatValue( SexyString theValueName, double theValue
 
 //************************************
 // Method:    GetFloatValue
-// FullName:  GameState::Profile::GetFloatValue
+// FullName:  Sexy::Profile::GetFloatValue
 // Access:    public 
 // Returns:   double
 // Description: Gets the Specified variable, and returns theDefault if not found
@@ -459,7 +472,7 @@ void GameState::Profile::SetFloatValue( SexyString theValueName, double theValue
 // Parameter: SexyString theValueName
 // Parameter: double theDefault
 //************************************
-double GameState::Profile::GetFloatValue( SexyString theValueName, double theDefault )
+double Sexy::Profile::GetFloatValue( SexyString theValueName, double theDefault )
 {
 	if (mFloatMap.find(theValueName) != mFloatMap.end())
 		return mFloatMap[theValueName];
@@ -469,14 +482,14 @@ double GameState::Profile::GetFloatValue( SexyString theValueName, double theDef
 
 //************************************
 // Method:    SetStringValue
-// FullName:  GameState::Profile::SetStringValue
+// FullName:  Sexy::Profile::SetStringValue
 // Access:    public 
 // Returns:   void
 // Description:  Sets the specified Variable to the Value
 // Parameter: SexyString theValueName
 // Parameter: SexyString theValue
 //************************************
-void GameState::Profile::SetStringValue( SexyString theValueName, SexyString theValue )
+void Sexy::Profile::SetStringValue( SexyString theValueName, SexyString theValue )
 {
 	if (mStringMap.find(theValueName) != mStringMap.end())
 		mStringMap[theValueName] = theValue;
@@ -486,7 +499,7 @@ void GameState::Profile::SetStringValue( SexyString theValueName, SexyString the
 
 //************************************
 // Method:    GetStringValue
-// FullName:  GameState::Profile::GetStringValue
+// FullName:  Sexy::Profile::GetStringValue
 // Access:    public 
 // Returns:   SexyString
 // Description: Gets the Specified variable, and returns theDefault if not found
@@ -495,7 +508,7 @@ void GameState::Profile::SetStringValue( SexyString theValueName, SexyString the
 // Parameter: SexyString theValueName
 // Parameter: SexyString theDefault
 //************************************
-SexyString GameState::Profile::GetStringValue( SexyString theValueName, SexyString theDefault )
+SexyString Sexy::Profile::GetStringValue( SexyString theValueName, SexyString theDefault )
 {
 	if (mStringMap.find(theValueName) != mStringMap.end())
 		return mStringMap[theValueName];
@@ -503,7 +516,16 @@ SexyString GameState::Profile::GetStringValue( SexyString theValueName, SexyStri
 	return theDefault;
 }
 
-void GameState::Profile::EraseStateSaves(SexyString theUserName)
+//************************************
+// Method:      EraseStateSaves
+// FullName:    Sexy::Profile::EraseStateSaves
+// Access:      virtual public 
+// Returns:     void
+// Parameter:   SexyString theUserName
+// Description: To help manage game states, states are saved in a user
+//				sub-folder. To delete all the states, just delete the folder.
+//************************************
+void Sexy::Profile::EraseStateSaves(SexyString theUserName)
 {
 	if(theUserName == _S(""))
 	{

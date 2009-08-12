@@ -10,11 +10,7 @@ namespace Sexy
 {
 	class XMLParser;			// Forward Class declaration to avoid Include files
 	class XMLElement;
-};
-using namespace Sexy;
 
-namespace GameState
-{
 	class Profile
 	{
 		// 'Protected' Section allows only classes derived from Profile
@@ -75,14 +71,14 @@ namespace GameState
 	};
 };
 
-#define GETPROFILEINT(a,b) GameState::Profile::GetProfile()->GetIntegerValue(a,b)
-#define GETPROFILEFLOAT(a,b) GameState::Profile::GetProfile()->GetFloat(a,b)
-#define GETPROFILEBOOL(a,b) GameState::Profile::GetProfile()->GetBooleanValue(a,b)
-#define GETPROFILESTRING(a,b) GameState::Profile::GetProfile()->GetStringValue(a,b)
+#define GETPROFILEINT(a,b) Sexy::Profile::GetProfile()->GetIntegerValue(a,b)
+#define GETPROFILEFLOAT(a,b) Sexy::Profile::GetProfile()->GetFloat(a,b)
+#define GETPROFILEBOOL(a,b) Sexy::Profile::GetProfile()->GetBooleanValue(a,b)
+#define GETPROFILESTRING(a,b) Sexy::Profile::GetProfile()->GetStringValue(a,b)
 
-#define SETPROFILEINT(a,b) GameState::Profile::GetProfile()->SetIntegerValue(a,b)
-#define SETPROFILEFLOAT(a,b) GameState::Profile::GetProfile()->SetFloat(a,b)
-#define SETPROFILEBOOL(a,b) GameState::Profile::GetProfile()->SetBooleanValue(a,b)
-#define SETPROFILESTRING(a,b) GameState::Profile::GetProfile()->SetStringValue(a,b)
+#define SETPROFILEINT(a,b) Sexy::Profile::GetProfile()->SetIntegerValue(a,b)
+#define SETPROFILEFLOAT(a,b) Sexy::Profile::GetProfile()->SetFloat(a,b)
+#define SETPROFILEBOOL(a,b) Sexy::Profile::GetProfile()->SetBooleanValue(a,b)
+#define SETPROFILESTRING(a,b) Sexy::Profile::GetProfile()->SetStringValue(a,b)
 
 #endif
