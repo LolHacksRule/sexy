@@ -65,6 +65,7 @@ BASS_INSTANCE::BASS_INSTANCE(const char *dllName)
 	GETPROC(BASS_ChannelSetSync);
 	GETPROC(BASS_ChannelRemoveSync);
 	GETPROC(BASS_ChannelGetData);
+	GETPROC(BASS_ChannelBytes2Seconds);
 
 	// supported by BASS 1.1 and higher. Only work if the user has DX8 or higher though.
 	GETPROC(BASS_FXSetParameters);

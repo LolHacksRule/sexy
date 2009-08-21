@@ -313,6 +313,8 @@ public:
 	Rect					mScreenBounds;
 	bool					mEnableWindowAspect;
 	Ratio					mWindowAspect;
+	bool					mAspectCorrect;
+	bool					mAspectNoStretch;
 
 	StringWStringMap		mStringProperties;
 	StringBoolMap			mBoolProperties;

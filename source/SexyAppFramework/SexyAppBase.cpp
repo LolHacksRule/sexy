@@ -284,6 +284,8 @@ SexyAppBase::SexyAppBase()
 	mEnableWindowAspect = false;
 	mWindowAspect.Set(4, 3);
 	mIsWideWindow = false;
+	mAspectCorrect = true;
+	mAspectNoStretch = false;
 
 	int i;
 
@@ -1575,6 +1577,8 @@ void SexyAppBase::WriteToRegistry()
 	RegistryWriteInteger("SfxVolume", (int) (mSfxVolume * 100));
 	RegistryWriteInteger("Muted", (mMuteCount - mAutoMuteCount > 0) ? 1 : 0);
 	RegistryWriteInteger("ScreenMode", mIsWindowed ? 0 : 1);
+	RegistryWriteInteger("AspectCorrection", mAspectCorrect ? 0 : 1);
+	RegistryWriteInteger("AspectNoStretch", mAspectNoStretch ? 0 : 1);
 	RegistryWriteInteger("PreferredX", mPreferredX);
 	RegistryWriteInteger("PreferredY", mPreferredY);
 	RegistryWriteInteger("CustomCursors", mCustomCursorsEnabled ? 1 : 0);		
@@ -1912,6 +1916,12 @@ void SexyAppBase::ReadFromRegistry()
 
 	if (RegistryReadInteger("MouseSensitivity", &anInt))
 		mMouseSensitivity = anInt / 100.0f;
+	if (RegistryReadInteger("AspectCorrection", &anInt))
+		mAspectCorrect = anInt == 0;
+
+// TODO: Uncomment this line to make this value persistent
+// 	if (RegistryReadInteger("AspectNoStretch", &anInt))
+// 		mAspectNoStretch = anInt == 0;
 
 	RegistryReadInteger("PreferredX", &mPreferredX);
 	RegistryReadInteger("PreferredY", &mPreferredY);	
