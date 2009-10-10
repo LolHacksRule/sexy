@@ -43,6 +43,8 @@ namespace Sexy
 		virtual bool				LoadUser(SexyString theUserName);		// Load the User from the users dir
 		virtual bool				SaveUser();								// Called to Save this User
 		virtual bool				NewUser(SexyString theUserName);		// Called to start a New User
+		virtual bool				RenameUser(SexyString theNewUserName);	// Called to Rename User
+		virtual bool				DeleteUser(SexyString theUserName);		// Called to Delete User
 
 		// Member Variable Get/Set Methods
 	public:

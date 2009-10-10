@@ -367,6 +367,62 @@ bool Profile::NewUser(SexyString theUserName)
 }
 
 //************************************
+// Method:    RenameUser
+// FullName:  Sexy::Profile::RenameUser
+// Access:    public 
+// Returns:   bool
+// Description: Rename the userprofile-file
+//				This is one of the main methods you will be using.
+//				(caller: maybe remember to rename the scores of the user)
+// Parameter: SexyString theNewUserName
+//************************************
+bool Profile::RenameUser(SexyString theNewUserName)
+{
+	if (theNewUserName != _S(""))
+	{
+		SexyString OldUserName = mUserName;  // remember old username
+
+		if (SetUserName(theNewUserName) == true)  // sets mUserName to theNewUserName if successful
+		{
+			SexyString OldFileName = GetUserFileName(OldUserName);
+			SexyString NewFileName = GetUserFileName(mUserName);
+
+			rename(OldFileName.c_str(), NewFileName.c_str()); 
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
+//************************************
+// Method:    DeleteUser
+// FullName:  Sexy::Profile::DeleteUser
+// Access:    public 
+// Returns:   bool
+// Description: Delete the profile-file
+//				This is one of the main methods you will be using.
+// 				(caller: maybe remember to delete the scores of the user)
+// Parameter: SexyString theUserName
+//************************************
+bool Profile::DeleteUser(SexyString theUserName)
+{
+	if (theUserName != _S(""))
+	{
+		SexyString aFileName = GetUserFileName(theUserName);
+
+		remove(aFileName.c_str());
+
+		return true;
+	}
+	return false;
+}
+
+//************************************
 // Method:    SetUserName
 // FullName:  Sexy::Profile::SetUserName
 // Access:    public 
@@ -378,18 +434,22 @@ bool Profile::NewUser(SexyString theUserName)
 //************************************
 bool Profile::SetUserName(SexyString theUserName)
 {
-// 	for(unsigned int i = 0; i < theUserName.length(); i++)
-// 	{
-// 		if(     theUserName[i] < 'A' 
-// 			|| (theUserName[i] > 'Z' && theUserName[i] < 'a')
-// 			||  theUserName[i] > 'z' )
-// 		{
-// 			// Bad User Name
-// 			return false;
-// 		}
-// 	}
+	// don´t allow the following chars in a username
+	for (unsigned int i = 0; i < theUserName.length(); i++)
+	{
+		if (theUserName[i] == '\\' || theUserName[i] == '/' || 
+		theUserName[i] == ':'  || theUserName[i] == '?' ||
+		theUserName[i] == '"'  || theUserName[i] == '<' ||   
+		theUserName[i] == '>'  || theUserName[i] == '|')
+		{
+			// bad User Name
+			return false;
+		}
+	}
 
 	mUserName = theUserName;
+	// write registry key if the username was entered in a dialog
+	gSexyAppBase->RegistryWriteString("LastProfileName", mUserName);
 	return true;
 }
 
