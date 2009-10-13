@@ -1007,8 +1007,8 @@ bool ImageLib::WriteBMPImage(const std::string& theFileName, Image* theImage)
 	int aNumBytes = theImage->mWidth*theImage->mHeight*4;
 
 	aFileHeader.bfType = ('M'<<8) | 'B';
-	aFileHeader.bfSize = sizeof(aFileHeader) + sizeof(aHeader) + aNumBytes;
-	aFileHeader.bfOffBits = sizeof(aHeader); 
+	aFileHeader.bfSize = sizeof(BITMAPINFOHEADER);//sizeof(aFileHeader) + sizeof(aHeader) + aNumBytes;
+	aFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER); //sizeof(aHeader);  
 
 	aHeader.biSize = sizeof(aHeader);
 	aHeader.biWidth = theImage->mWidth;
