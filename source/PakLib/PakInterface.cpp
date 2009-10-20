@@ -13,6 +13,15 @@ enum
 
 PakInterface* gPakInterface = new PakInterface();
 
+// Make sure gPakInterface will get deleted upon application exit
+static struct PakInterfaceDeleter 
+{
+	~PakInterfaceDeleter() 
+	{ 
+		delete gPakInterface; gPakInterface = NULL; 
+	}
+} gPakInterfaceDeleter;
+
 static std::string StringToUpper(const std::string& theString)
 {
 	std::string aString;
