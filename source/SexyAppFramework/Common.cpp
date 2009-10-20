@@ -706,6 +706,8 @@ bool Sexy::AllowAllAccess(const std::string& theFileName)
 						result = true;
 				}
 			}
+
+			delete [] pSD;
 		}
 	}
 
