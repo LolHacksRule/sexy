@@ -1318,10 +1318,10 @@ static inline D3DTLVERTEX Interpolate(const D3DTLVERTEX &v1, const D3DTLVERTEX &
 	aVertex.tv = v1.tv + t*(v2.tv-v1.tv);
 	if (v1.color!=v2.color)
 	{
-		int r = RGBA_GETRED(v1.color) + t*(RGBA_GETRED(v2.color) - RGBA_GETRED(v1.color));
-		int g = RGBA_GETGREEN(v1.color) + t*(RGBA_GETGREEN(v2.color) - RGBA_GETGREEN(v1.color));
-		int b = RGBA_GETBLUE(v1.color) + t*(RGBA_GETBLUE(v2.color) - RGBA_GETBLUE(v1.color));
-		int a = RGBA_GETALPHA(v1.color) + t*(RGBA_GETALPHA(v2.color) - RGBA_GETALPHA(v1.color));
+		int r = RGBA_GETRED(v1.color) + t*((int)RGBA_GETRED(v2.color) - (int)RGBA_GETRED(v1.color));;
+		int g = RGBA_GETGREEN(v1.color) + t*((int)RGBA_GETGREEN(v2.color) - (int)RGBA_GETGREEN(v1.color));
+		int b = RGBA_GETBLUE(v1.color) + t*((int)RGBA_GETBLUE(v2.color) - (int)RGBA_GETBLUE(v1.color));
+		int a = RGBA_GETALPHA(v1.color) + t*((int)RGBA_GETALPHA(v2.color) - (int)RGBA_GETALPHA(v1.color));
 		aVertex.color = RGBA_MAKE(r,g,b,a);
 	}
 	
