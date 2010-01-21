@@ -328,3 +328,27 @@ bool XMLWriter::CheckFileOpen()
 }
 
 
+
+bool Sexy::XMLWriter::WriteAttribute( const SexyString& aAttributeKey )
+{
+	CheckFileOpen();
+	if(mHasFailed) return false;
+
+	if(mOpenAttributes)
+	{
+		if(!ValidateElementNodeName(aAttributeKey))
+		{
+			Warn(aAttributeKey + _S(" is an invalid Attribute Name."));
+		}
+
+		fprintf(mFile, " %s", aAttributeKey.c_str());
+		return true;
+	}
+
+	if(mSectionStack.size())
+		Fail(_S("Attributes Section already closed for ") + mSectionStack.top());
+	else
+		Fail(_S("No Element Nodes Open for Writing Attributes."));
+
+	return false;
+}

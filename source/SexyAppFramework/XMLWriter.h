@@ -50,6 +50,7 @@ static	bool					AddAttribute(XMLElement* theElement, const SexyString& aAttribut
 		bool					WriteAttribute(const SexyString& aAttributeKey, const SexyString& aAttributeValue);
 		bool					WriteAttribute(const SexyString& aAttributeKey, const float& aAttributeValue);
 		bool					WriteAttribute(const SexyString& aAttributeKey, const int& aAttributeValue);
+		bool					WriteAttribute(const SexyString& aAttributeKey);
 		void					Comment(const SexyString& theComment);
 		bool					StartElement(const SexyString &theElementName);
 		bool					StartElement(XMLElement *theElement);
