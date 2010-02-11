@@ -1139,11 +1139,14 @@ void SexyAppBase::SetCursorImage(int theCursorNum, Image* theImage)
 	}
 }
 
-void SexyAppBase::TakeScreenshot()
+void WriteScreenShotThread(void *theArg)
 {
-	if (mDDInterface==NULL || mDDInterface->mDrawSurface==NULL)
-		return;
+	//////////////////////////////////////////////////////////////////////////
+	// Validate the passed parameter
+	DDImage* theImage = (DDImage*)theArg;
+	if(theImage == NULL) return;
 
+	//////////////////////////////////////////////////////////////////////////
 	// Get free image name
 	std::string anImageDir = GetAppDataFolder() + "_screenshots";
 	MkDir(anImageDir);
@@ -1169,6 +1172,25 @@ void SexyAppBase::TakeScreenshot()
 	}
 	std::string anImageName = anImageDir + anImagePrefix + StrFormat("%d.png",aMaxId+1);
 
+	//////////////////////////////////////////////////////////////////////////
+	// Write image
+	ImageLib::Image aSaveImage;
+	aSaveImage.mBits = theImage->mBits;
+	aSaveImage.mWidth = theImage->mWidth;
+	aSaveImage.mHeight = theImage->mHeight;
+	ImageLib::WritePNGImage(anImageName, &aSaveImage);
+	aSaveImage.mBits = NULL;
+
+	//////////////////////////////////////////////////////////////////////////
+	// delete the image in this thread
+	delete theImage;
+}
+
+void SexyAppBase::TakeScreenshot()
+{
+	if (mDDInterface==NULL || mDDInterface->mDrawSurface==NULL)
+		return;
+
 	// Capture screen
 	LPDIRECTDRAWSURFACE aSurface = mDDInterface->mDrawSurface;
 	
@@ -1176,61 +1198,21 @@ void SexyAppBase::TakeScreenshot()
 	// returns false so we can lock the surface.
 	mDDInterface->mDrawSurface = NULL; 
 	
-	DDImage anImage(mDDInterface);
-	anImage.SetSurface(aSurface);
-	anImage.GetBits();
-	anImage.DeleteDDSurface();
+	DDImage* anImage = new DDImage(mDDInterface);
+	anImage->SetSurface(aSurface);
+	anImage->GetBits();
+	anImage->DeleteDDSurface();
 	mDDInterface->mDrawSurface = aSurface; 
 
-	if (anImage.mBits==NULL)
-		return;
-		
-	// Write image
-	ImageLib::Image aSaveImage;
-	aSaveImage.mBits = anImage.mBits;
-	aSaveImage.mWidth = anImage.mWidth;
-	aSaveImage.mHeight = anImage.mHeight;
-	ImageLib::WritePNGImage(anImageName, &aSaveImage);
-	aSaveImage.mBits = NULL;
-		
-
-/*
-	keybd_event(VK_MENU,0,0,0);
-    keybd_event(VK_SNAPSHOT,0,0,0);
-    keybd_event(VK_MENU,0,KEYEVENTF_KEYUP,0);
-	if (OpenClipboard(mHWnd))
+	if (anImage->mBits==NULL)
 	{
-		HBITMAP aBitmap = (HBITMAP)GetClipboardData(CF_BITMAP);
-		if (aBitmap!=NULL)
-		{
-			BITMAP anObject;
-			ZeroMemory(&anObject,sizeof(anObject));
-			GetObject(aBitmap,sizeof(anObject),&anObject);
+		delete anImage;
+		return;
+	}
 
-			BITMAPINFO anInfo;
-			ZeroMemory(&anInfo,sizeof(anInfo));
-			BITMAPINFOHEADER &aHeader = anInfo.bmiHeader;
-			aHeader.biBitCount = 32;
-			aHeader.biPlanes = 1;
-			aHeader.biHeight = -abs(anObject.bmHeight);
-			aHeader.biWidth = abs(anObject.bmWidth);
-			aHeader.biSize = sizeof(aHeader);
-			aHeader.biSizeImage = aHeader.biHeight*aHeader.biWidth*4;
-			ImageLib::Image aSaveImage;
-			aSaveImage.mBits = new DWORD[abs(anObject.bmWidth*anObject.bmHeight)];
-			aSaveImage.mWidth = abs(anObject.bmWidth);
-			aSaveImage.mHeight = abs(anObject.bmHeight);
-
-			HDC aDC = GetDC(NULL);
-			if (GetDIBits(aDC,aBitmap,0,aSaveImage.mHeight,aSaveImage.mBits,&anInfo,DIB_RGB_COLORS))
-				ImageLib::WritePNGImage(anImageName, &aSaveImage);
-
-			ReleaseDC(NULL,aDC);
-		}
-		CloseClipboard();
-	}*/
-
-	ClearUpdateBacklog();
+	_beginthread(WriteScreenShotThread, 0, anImage);
+	
+//	ClearUpdateBacklog();
 }
 
 void SexyAppBase::DumpProgramInfo()
