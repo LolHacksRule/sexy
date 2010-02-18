@@ -253,11 +253,11 @@ std::wstring Sexy::SexyStringToWString(const SexyString& theString)
 std::string Sexy::Trim(const std::string& theString)
 {
 	int aStartPos = 0;
-	while ( aStartPos < (int) theString.length() && isspace(theString[aStartPos]) )
+	while ( aStartPos < (int) theString.length() && isspace((unsigned char)theString[aStartPos]) )
 		aStartPos++;
 
 	int anEndPos = theString.length() - 1;
-	while ( anEndPos >= 0 && isspace(theString[anEndPos]) )
+	while ( anEndPos >= 0 && isspace((unsigned char)theString[anEndPos]) )
 		anEndPos--;
 
 	return theString.substr(aStartPos, anEndPos - aStartPos + 1);
